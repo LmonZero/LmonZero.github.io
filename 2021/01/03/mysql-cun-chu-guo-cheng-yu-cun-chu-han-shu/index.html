@@ -469,21 +469,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-01-03
+                    2021-01-06
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    837
+                    1.6k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    6 分
                 </div>
                 
 
@@ -569,6 +569,165 @@
 <span class="token keyword">call</span> val_into<span class="token punctuation">(</span><span class="token number">17470</span><span class="token punctuation">,</span><span class="token variable">@val_CardPhyicalCode</span><span class="token punctuation">,</span><span class="token variable">@val_TransCode</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">//</span>
 
 <span class="token keyword">SELECT</span> <span class="token variable">@val_CardPhyicalCode</span><span class="token punctuation">,</span><span class="token variable">@val_TransCode</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="存储过程中的流程控制"><a href="#存储过程中的流程控制" class="headerlink" title="存储过程中的流程控制"></a>存储过程中的流程控制</h2><h4 id="流程控制语句（继续、结束）"><a href="#流程控制语句（继续、结束）" class="headerlink" title="流程控制语句（继续、结束）"></a>流程控制语句（继续、结束）</h4><pre class="line-numbers language-sql"><code class="language-sql">leave 标签<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">--break</span>
+
+iterate 标签<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">--continue</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h4 id="if条件判断（推荐）"><a href="#if条件判断（推荐）" class="headerlink" title="if条件判断（推荐）"></a>if条件判断（推荐）</h4><pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">IF</span> 条件判断 <span class="token keyword">THEN</span> 结果
+    <span class="token punctuation">[</span>ELSEIF 条件判断 <span class="token keyword">THEN</span> 结果<span class="token punctuation">]</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token punctuation">[</span><span class="token keyword">ELSE</span> 结果<span class="token punctuation">]</span>
+<span class="token keyword">END</span> <span class="token keyword">IF</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h5><pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">delimiter</span> <span class="token comment" spellcheck="true">//</span>
+<span class="token keyword">create</span> <span class="token keyword">procedure</span> s_sql<span class="token punctuation">(</span><span class="token operator">in</span> val_id <span class="token keyword">int</span><span class="token punctuation">)</span>
+<span class="token keyword">begin</span>
+    <span class="token comment" spellcheck="true"># 声明一个局部变量result存放工资标准结果</span>
+    <span class="token keyword">declare</span> result <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true"># 声明一个局部变量存放查询得到的工资</span>
+    <span class="token keyword">declare</span> s <span class="token keyword">double</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true"># 根据入参id查询工资</span>
+    <span class="token keyword">select</span> salary <span class="token keyword">into</span> s <span class="token keyword">from</span> employee <span class="token keyword">where</span> id <span class="token operator">=</span> val_id<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true"># if判断的使用</span>
+    <span class="token keyword">if</span> s <span class="token operator">&lt;=</span> <span class="token number">6000</span> <span class="token keyword">then</span>
+        <span class="token keyword">set</span> result <span class="token operator">=</span> <span class="token string">'低工资标准'</span><span class="token punctuation">;</span>
+    elseif s <span class="token operator">&lt;=</span> <span class="token number">10000</span> <span class="token keyword">then</span>
+        <span class="token keyword">set</span> result <span class="token operator">=</span> <span class="token string">'中工资标准'</span><span class="token punctuation">;</span>
+    elseif s <span class="token operator">&lt;=</span> <span class="token number">15000</span> <span class="token keyword">then</span>
+        <span class="token keyword">set</span> result <span class="token operator">=</span> <span class="token string">'中上工资标准'</span><span class="token punctuation">;</span>
+    <span class="token keyword">else</span>
+        <span class="token keyword">set</span> result <span class="token operator">=</span> <span class="token string">'高工资标准'</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span> <span class="token keyword">if</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true"># 查询工资标准结果</span>
+    <span class="token keyword">select</span> result<span class="token punctuation">;</span>
+<span class="token keyword">end</span> <span class="token comment" spellcheck="true">//</span>
+
+<span class="token comment" spellcheck="true"># 调用函数，传入参数</span>
+<span class="token keyword">call</span> s_sql<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="case条件判断"><a href="#case条件判断" class="headerlink" title="case条件判断"></a>case条件判断</h4><pre class="line-numbers language-sql"><code class="language-sql"><span class="token comment" spellcheck="true"># 语法一</span>
+<span class="token keyword">CASE</span> case_value
+    <span class="token keyword">WHEN</span> when_value <span class="token keyword">THEN</span> 结果
+    <span class="token punctuation">[</span><span class="token keyword">WHEN</span> when_value <span class="token keyword">THEN</span> 结果<span class="token punctuation">]</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token punctuation">[</span><span class="token keyword">ELSE</span> 结果<span class="token punctuation">]</span>
+<span class="token keyword">END</span> <span class="token keyword">CASE</span>
+
+<span class="token comment" spellcheck="true"># 语法二(推荐语法)</span>
+<span class="token keyword">CASE</span>
+    <span class="token keyword">WHEN</span> 条件判断 <span class="token keyword">THEN</span> 结果
+    <span class="token punctuation">[</span><span class="token keyword">WHEN</span> 条件判断 <span class="token keyword">THEN</span> 结果<span class="token punctuation">]</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token punctuation">[</span><span class="token keyword">ELSE</span> 结果<span class="token punctuation">]</span>
+<span class="token keyword">END</span> <span class="token keyword">CASE</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="范例-1"><a href="#范例-1" class="headerlink" title="范例"></a>范例</h5><pre class="line-numbers language-sql"><code class="language-sql"><span class="token comment" spellcheck="true"># 语法一</span>
+<span class="token keyword">delimiter</span> <span class="token comment" spellcheck="true">//</span>
+<span class="token keyword">create</span> <span class="token keyword">procedure</span> s_case<span class="token punctuation">(</span><span class="token operator">in</span> val_id <span class="token keyword">int</span><span class="token punctuation">)</span>
+<span class="token keyword">begin</span>
+    <span class="token comment" spellcheck="true"># 声明一个局部变量result存放工资标准结果</span>
+    <span class="token keyword">declare</span> result <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true"># 声明一个局部变量存放查询得到的工资</span>
+    <span class="token keyword">declare</span> s <span class="token keyword">double</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true"># 根据入参id查询工资</span>
+    <span class="token keyword">select</span> salary <span class="token keyword">into</span> s <span class="token keyword">from</span> employee <span class="token keyword">where</span> id <span class="token operator">=</span> val_id<span class="token punctuation">;</span>
+    <span class="token keyword">case</span> s
+        <span class="token keyword">when</span> <span class="token number">6000</span> <span class="token keyword">then</span> <span class="token keyword">set</span> result <span class="token operator">=</span> <span class="token string">'低工资标准'</span><span class="token punctuation">;</span>
+        <span class="token keyword">when</span> <span class="token number">10000</span> <span class="token keyword">then</span> <span class="token keyword">set</span> result <span class="token operator">=</span> <span class="token string">'中工资标准'</span><span class="token punctuation">;</span>
+        <span class="token keyword">when</span> <span class="token number">15000</span> <span class="token keyword">then</span> <span class="token keyword">set</span> result <span class="token operator">=</span> <span class="token string">'中上工资标准'</span><span class="token punctuation">;</span>
+        <span class="token keyword">else</span> <span class="token keyword">set</span> result <span class="token operator">=</span> <span class="token string">'高工资标准'</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span> <span class="token keyword">case</span><span class="token punctuation">;</span>
+    <span class="token keyword">select</span> result<span class="token punctuation">;</span>
+<span class="token keyword">end</span> <span class="token comment" spellcheck="true">//</span>
+
+<span class="token keyword">call</span> s_case<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true"># 语法二(推荐)</span>
+<span class="token keyword">delimiter</span> <span class="token comment" spellcheck="true">//</span>
+<span class="token keyword">create</span> <span class="token keyword">procedure</span> s_case<span class="token punctuation">(</span><span class="token operator">in</span> val_id <span class="token keyword">int</span><span class="token punctuation">)</span>
+<span class="token keyword">begin</span>
+    <span class="token comment" spellcheck="true"># 声明一个局部变量result存放工资标准结果</span>
+    <span class="token keyword">declare</span> result <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true"># 声明一个局部变量存放查询得到的工资</span>
+    <span class="token keyword">declare</span> s <span class="token keyword">double</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true"># 根据入参id查询工资</span>
+    <span class="token keyword">select</span> salary <span class="token keyword">into</span> s <span class="token keyword">from</span> employee <span class="token keyword">where</span> id <span class="token operator">=</span> val_id<span class="token punctuation">;</span>
+    <span class="token keyword">case</span>
+        <span class="token keyword">when</span> s <span class="token operator">&lt;=</span> <span class="token number">6000</span> <span class="token keyword">then</span> <span class="token keyword">set</span> result <span class="token operator">=</span> <span class="token string">'低工资标准'</span><span class="token punctuation">;</span>
+        <span class="token keyword">when</span> s <span class="token operator">&lt;=</span> <span class="token number">10000</span> <span class="token keyword">then</span> <span class="token keyword">set</span> result <span class="token operator">=</span> <span class="token string">'中工资标准'</span><span class="token punctuation">;</span>
+        <span class="token keyword">when</span> s <span class="token operator">&lt;=</span> <span class="token number">15000</span> <span class="token keyword">then</span> <span class="token keyword">set</span> result <span class="token operator">=</span> <span class="token string">'中上工资标准'</span><span class="token punctuation">;</span>
+        <span class="token keyword">else</span> <span class="token keyword">set</span> result <span class="token operator">=</span> <span class="token string">'高工资标准'</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span> <span class="token keyword">case</span><span class="token punctuation">;</span>
+    <span class="token keyword">select</span> result<span class="token punctuation">;</span>
+<span class="token keyword">end</span> <span class="token comment" spellcheck="true">//</span>
+
+<span class="token keyword">call</span> s_case<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="loop循环"><a href="#loop循环" class="headerlink" title="loop循环"></a>loop循环</h4><pre class="line-numbers language-sql"><code class="language-sql"><span class="token punctuation">[</span>别名:<span class="token punctuation">]</span> LOOP
+    循环语句
+<span class="token keyword">END</span> LOOP <span class="token punctuation">[</span>别名<span class="token punctuation">]</span>
+
+注意：别名和别名控制的是同一个标签。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="范例-2"><a href="#范例-2" class="headerlink" title="范例"></a>范例</h5><pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">delimiter</span> <span class="token comment" spellcheck="true">//</span>
+<span class="token keyword">create</span> <span class="token keyword">procedure</span> s_loop<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">begin</span>
+    <span class="token comment" spellcheck="true"># 声明计数器</span>
+    <span class="token keyword">declare</span> i <span class="token keyword">int</span> <span class="token keyword">default</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true"># 开始循环</span>
+    num:
+    loop
+        <span class="token comment" spellcheck="true"># 查询计数器记录的值</span>
+        <span class="token keyword">select</span> i<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true"># 判断大于等于停止计数</span>
+        <span class="token keyword">if</span> i <span class="token operator">>=</span> <span class="token number">10</span> <span class="token keyword">then</span>
+            leave num<span class="token punctuation">;</span>
+        <span class="token keyword">end</span> <span class="token keyword">if</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true"># 计数器自增1</span>
+        <span class="token keyword">set</span> i <span class="token operator">=</span> i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true"># 结束循环</span>
+    <span class="token keyword">end</span> loop num<span class="token punctuation">;</span>
+<span class="token keyword">end</span> <span class="token comment" spellcheck="true">//</span>
+
+<span class="token keyword">call</span> s_loop<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="repeat循环"><a href="#repeat循环" class="headerlink" title="repeat循环"></a>repeat循环</h4><pre class="line-numbers language-sql"><code class="language-sql"><span class="token punctuation">[</span>别名:<span class="token punctuation">]</span> REPEAT
+    循环语句
+UNTIL 条件
+<span class="token keyword">END</span> REPEAT <span class="token punctuation">[</span>别名<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="范例-3"><a href="#范例-3" class="headerlink" title="范例"></a>范例</h5><pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">delimiter</span> <span class="token comment" spellcheck="true">//</span>
+<span class="token keyword">create</span> <span class="token keyword">procedure</span> s_repeat<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">begin</span>
+    <span class="token keyword">declare</span> i <span class="token keyword">int</span> <span class="token keyword">default</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">declare</span> str <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">256</span><span class="token punctuation">)</span> <span class="token keyword">default</span> <span class="token string">'1'</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true"># 开始repeat循环</span>
+    num:
+    repeat
+        <span class="token keyword">set</span> i <span class="token operator">=</span> i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token keyword">set</span> str <span class="token operator">=</span> concat<span class="token punctuation">(</span>str<span class="token punctuation">,</span> <span class="token string">'-'</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true"># until 结束条件</span>
+    <span class="token comment" spellcheck="true"># end repeat 结束num 结束repeat循环</span>
+    until i <span class="token operator">>=</span> <span class="token number">10</span> <span class="token keyword">end</span> repeat num<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true"># 查询字符串拼接结果</span>
+    <span class="token keyword">select</span> str<span class="token punctuation">;</span>
+<span class="token keyword">end</span> <span class="token comment" spellcheck="true">//</span>
+
+<span class="token keyword">call</span> s_repeat<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="while循环"><a href="#while循环" class="headerlink" title="while循环"></a>while循环</h4><pre class="line-numbers language-sql"><code class="language-sql"><span class="token punctuation">[</span>别名<span class="token punctuation">]</span> <span class="token keyword">WHILE</span> 条件 <span class="token keyword">DO</span>
+    循环语句
+<span class="token keyword">END</span> <span class="token keyword">WHILE</span> <span class="token punctuation">[</span>别名<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h4 id="范例-4"><a href="#范例-4" class="headerlink" title="范例"></a>范例</h4><pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">delimiter</span> <span class="token comment" spellcheck="true">//</span>
+<span class="token keyword">create</span> <span class="token keyword">procedure</span> s_while<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">begin</span>
+    <span class="token keyword">declare</span> i <span class="token keyword">int</span> <span class="token keyword">default</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">declare</span> str <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">256</span><span class="token punctuation">)</span> <span class="token keyword">default</span> <span class="token string">'1'</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true"># 开始while循环</span>
+    num:
+    <span class="token comment" spellcheck="true"># 指定while循环结束条件</span>
+    <span class="token keyword">while</span> i <span class="token operator">&lt;</span> <span class="token number">10</span> <span class="token keyword">do</span>
+        <span class="token keyword">set</span> i <span class="token operator">=</span> i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token keyword">set</span> str <span class="token operator">=</span> concat<span class="token punctuation">(</span>str<span class="token punctuation">,</span> <span class="token string">'+'</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true"># while循环结束</span>
+    <span class="token keyword">end</span> <span class="token keyword">while</span> num<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true"># 查询while循环拼接字符串</span>
+    <span class="token keyword">select</span> str<span class="token punctuation">;</span>
+<span class="token keyword">end</span> <span class="token comment" spellcheck="true">//</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
                 
             </div>
@@ -1109,7 +1268,7 @@
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">1.7k</span>&nbsp;字
+                class="white-color">2.4k</span>&nbsp;字
             
             
             
