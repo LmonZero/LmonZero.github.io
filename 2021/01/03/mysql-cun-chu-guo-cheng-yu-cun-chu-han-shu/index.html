@@ -29,9 +29,9 @@
 
     <script src="/libs/jquery/jquery.min.js"></script>
     
-<meta name="generator" content="Hexo 5.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><link rel="alternate" href="/atom.xml" title="Lmonの博客" type="application/atom+xml">
-</head>
+<meta name="generator" content="Hexo 5.3.0"><link rel="alternate" href="/atom.xml" title="Lmonの博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
 
@@ -759,8 +759,7 @@ UNTIL 条件
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p><strong>注意：</strong> MySQL中各种异常情况代码、错误码、别名和SQLSTATEM码可参考官方文档：</p>
 <p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.6/en/server-error-reference.html">https://dev.mysql.com/doc/refman/5.6/en/server-error-reference.html</a></p>
-<p>游标、句柄结合使用范例</p>
-<pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">delimiter</span> <span class="token comment" spellcheck="true">//</span>
+<h4 id="游标、句柄结合使用范例"><a href="#游标、句柄结合使用范例" class="headerlink" title="游标、句柄结合使用范例"></a>游标、句柄结合使用范例</h4><pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">delimiter</span> <span class="token comment" spellcheck="true">//</span>
 <span class="token keyword">create</span> <span class="token keyword">procedure</span> <span class="token number">f</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token keyword">begin</span>
     <span class="token keyword">declare</span> val_id <span class="token keyword">int</span><span class="token punctuation">;</span>
