@@ -29,9 +29,9 @@
 
     <script src="/libs/jquery/jquery.min.js"></script>
     
-<meta name="generator" content="Hexo 5.3.0"><link rel="alternate" href="/atom.xml" title="Lmonの博客" type="application/atom+xml">
-<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<meta name="generator" content="Hexo 5.3.0"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><link rel="alternate" href="/atom.xml" title="Lmonの博客" type="application/atom+xml">
+</head>
 
 
 
@@ -469,21 +469,21 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2021-01-06
+                    2021-01-09
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.6k
+                    2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    6 分
+                    8 分
                 </div>
                 
 
@@ -728,6 +728,78 @@ UNTIL 条件
     <span class="token keyword">select</span> str<span class="token punctuation">;</span>
 <span class="token keyword">end</span> <span class="token comment" spellcheck="true">//</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="游标与handler"><a href="#游标与handler" class="headerlink" title="游标与handler"></a>游标与handler</h2><h4 id="游标"><a href="#游标" class="headerlink" title="游标"></a>游标</h4><p>游标是可以得到某一个结果集并逐行处理数据。游标的逐行操作，导致了游标很少被使用！</p>
+<h4 id="游标语法"><a href="#游标语法" class="headerlink" title="游标语法"></a>游标语法</h4><pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">DECLARE</span> 游标名 <span class="token keyword">CURSOR</span> <span class="token keyword">FOR</span> 查询语句
+<span class="token comment" spellcheck="true">-- 打开语法</span>
+<span class="token keyword">OPEN</span> 游标名
+<span class="token comment" spellcheck="true">-- 取值语法 --只能取一行数据的值</span>
+<span class="token keyword">FETCH</span> 游标名 <span class="token keyword">INTO</span> var_name <span class="token punctuation">[</span><span class="token punctuation">,</span> var_name<span class="token punctuation">]</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token comment" spellcheck="true">-- 关闭语法</span>
+<span class="token keyword">CLOSE</span> 游标名<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="handler句柄"><a href="#handler句柄" class="headerlink" title="handler句柄"></a>handler句柄</h4><p>handler句柄可以用来捕获异常</p>
+<h4 id="handler句柄语法"><a href="#handler句柄语法" class="headerlink" title="handler句柄语法"></a>handler句柄语法</h4><pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">DECLARE</span> <span class="token keyword">handler</span>操作 <span class="token keyword">HANDLER</span>
+    <span class="token keyword">FOR</span> 情况列表<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">(</span>比如：异常错误情况 如错误码<span class="token punctuation">)</span>
+    操作语句
+
+操作：<span class="token keyword">CONTINUE</span>： 继续
+    <span class="token keyword">EXIT</span>： 退出
+    UNDO： 撤销
+
+范例：<span class="token keyword">declare</span> <span class="token keyword">continue</span> <span class="token keyword">handler</span> <span class="token keyword">for</span> 异常<span class="token punctuation">(</span>错误码<span class="token punctuation">)</span> <span class="token keyword">set</span> flag <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token keyword">DECLARE</span> <span class="token keyword">exit</span> <span class="token keyword">HANDLER</span> <span class="token keyword">FOR</span> SQLSTATE <span class="token string">'3D000'</span> <span class="token keyword">set</span> flag <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token keyword">DECLARE</span> <span class="token keyword">continue</span> <span class="token keyword">HANDLER</span> <span class="token keyword">FOR</span> <span class="token number">1050</span> <span class="token keyword">set</span> flag <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token keyword">DECLARE</span> <span class="token keyword">continue</span> <span class="token keyword">HANDLER</span> <span class="token keyword">FOR</span> <span class="token operator">not</span> found <span class="token keyword">set</span> flag <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+
+异常情况：mysql_error_code
+        SQLSTATE <span class="token punctuation">[</span><span class="token keyword">VALUE</span><span class="token punctuation">]</span> sqlstate_value
+        condition_name
+        SQLWARNING
+        <span class="token operator">NOT</span> FOUND
+        SQLEXCEPTION
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>注意：</strong> MySQL中各种异常情况代码、错误码、别名和SQLSTATEM码可参考官方文档：</p>
+<p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.6/en/server-error-reference.html">https://dev.mysql.com/doc/refman/5.6/en/server-error-reference.html</a></p>
+<p>游标、句柄结合使用范例</p>
+<pre class="line-numbers language-sql"><code class="language-sql"><span class="token keyword">delimiter</span> <span class="token comment" spellcheck="true">//</span>
+<span class="token keyword">create</span> <span class="token keyword">procedure</span> <span class="token number">f</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">begin</span>
+    <span class="token keyword">declare</span> val_id <span class="token keyword">int</span><span class="token punctuation">;</span>
+    <span class="token keyword">declare</span> val_name <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">declare</span> val_salary <span class="token keyword">double</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true"># 声明flag标记</span>
+    <span class="token keyword">declare</span> flag <span class="token keyword">boolean</span> <span class="token keyword">default</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true"># 声明游标</span>
+    <span class="token keyword">declare</span> emp_flag <span class="token keyword">cursor</span> <span class="token keyword">for</span>
+    <span class="token keyword">select</span> id<span class="token punctuation">,</span> name<span class="token punctuation">,</span> salary <span class="token keyword">from</span> employee<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true"># 使用handler句柄来解决结束循环问题</span>
+    <span class="token keyword">declare</span> <span class="token keyword">continue</span> <span class="token keyword">handler</span> <span class="token keyword">for</span> <span class="token number">1329</span> <span class="token keyword">set</span> flag <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true"># 打开</span>
+    <span class="token keyword">open</span> emp_flag<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true"># 使用循环取值</span>
+    <span class="token number">c</span>:loop
+        <span class="token keyword">fetch</span> emp_flag <span class="token keyword">into</span> val_id<span class="token punctuation">,</span> val_name<span class="token punctuation">,</span> val_salary<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true"># 如果标记为true则查询结果集</span>
+        <span class="token keyword">if</span> flag <span class="token keyword">then</span>
+            <span class="token keyword">select</span> val_id<span class="token punctuation">,</span> val_name<span class="token punctuation">,</span> val_salary<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true"># 如果标记为false则证明结果集查询完毕，停止死循环</span>
+        <span class="token keyword">else</span>
+            leave <span class="token number">c</span><span class="token punctuation">;</span>
+        <span class="token keyword">end</span> <span class="token keyword">if</span><span class="token punctuation">;</span>
+    <span class="token keyword">end</span> loop<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true"># 关闭</span>
+    <span class="token keyword">close</span> emp_flag<span class="token punctuation">;</span>
+
+    <span class="token keyword">select</span> val_id<span class="token punctuation">,</span> val_name<span class="token punctuation">,</span> val_salary<span class="token punctuation">;</span>
+<span class="token keyword">end</span> <span class="token comment" spellcheck="true">//</span>
+
+<span class="token keyword">call</span> <span class="token number">f</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
                 
             </div>
@@ -1268,7 +1340,7 @@ UNTIL 条件
             <br>
             
             &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                class="white-color">2.4k</span>&nbsp;字
+                class="white-color">2.8k</span>&nbsp;字
             
             
             
